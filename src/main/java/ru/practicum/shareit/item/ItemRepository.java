@@ -8,11 +8,11 @@ public interface ItemRepository {
 
     public Item createItem(Item item);
 
-    public Item getItem(long id);
+    public Item getItemById(long id);
 
     public List<Item> getItemsByUser(long id);
 
     public Item updateItem(long id, Item item);
 
-    public List<Item> searchItems(String text);
+    public void deleteItem(long id);
 }

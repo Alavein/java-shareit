@@ -15,25 +15,25 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User createUser(User user) {
-        log.info("Request to create User = {}", user);
+        log.info("Создание нового пользователя = {}", user);
         return userRepository.createUser(user);
     }
 
     @Override
     public List<User> getAllUsers() {
-        log.info("Requested list of All Users");
+        log.info("Вывод информации обо всех пользователях.");
         return userRepository.getAllUsers();
     }
 
     @Override
     public User getUser(long id) {
-        log.info("Requested User id = {}", id);
+        log.info("Вывод информации о пользователе с id = {}", id);
         return userRepository.getUserById(id);
     }
 
     @Override
     public User updateUser(long id, User user) {
-        log.info("Request to update User = {} with id = {}", user, id);
+        log.info("Обноваление данных о пользователе = {} с id = {}", user, id);
         return userRepository.updateUser(id, user);
     }
 
