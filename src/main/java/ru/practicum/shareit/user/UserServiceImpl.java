@@ -26,7 +26,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User getUser(long id) {
+    public User getUserById(long id) {
         log.info("Вывод информации о пользователе с id = {}", id);
         return userRepository.getUserById(id);
     }

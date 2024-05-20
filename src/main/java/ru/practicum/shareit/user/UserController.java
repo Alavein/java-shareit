@@ -28,8 +28,8 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public UserDto getUser(@PathVariable long id) {
-        return UserMapper.toUserDto(userService.getUser(id));
+    public UserDto getUserById(@PathVariable long id) {
+        return UserMapper.toUserDto(userService.getUserById(id));
     }
 
     @PostMapping

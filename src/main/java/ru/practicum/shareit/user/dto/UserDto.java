@@ -14,7 +14,7 @@ public class UserDto {
 
     private long id;
     private String name;
-    @NotNull(groups = {Create.class}, message = "Invalid email")
-    @Email(groups = {Update.class, Create.class}, message = "Invalid email format")
+    @NotNull(groups = {Create.class}, message = "Неверный адрес почты")
+    @Email(groups = {Update.class, Create.class}, message = "Неверный формат почты")
     private String email;
 }

@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 public class ItemController {
     private final ItemService itemService;
 
-    @GetMapping("/{id}")
+    @GetMapping("/{itemId}")
     public ItemDto getItem(@PathVariable long id) {
         return ItemMapper.toItemDto(itemService.getItemById(id));
     }
@@ -34,13 +34,13 @@ public class ItemController {
         return ItemMapper.toItemDto(itemService.createItem(ItemMapper.fromItemDto(itemDto, userId)));
     }
 
-    @PatchMapping("/{id}")
+    @PatchMapping("/{itemId}")
     public ItemDto updateItem(@RequestHeader("X-Sharer-User-Id") long userId, @RequestBody ItemDto itemDto,
                               @PathVariable long id) {
         return ItemMapper.toItemDto(itemService.updateItem(id, ItemMapper.fromItemDto(itemDto, userId)));
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{itemId}")
     public void deleteItem(@PathVariable long id) {
         itemService.deleteItem(id);
     }
