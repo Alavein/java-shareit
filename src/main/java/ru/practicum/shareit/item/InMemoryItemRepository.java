@@ -44,6 +44,14 @@ public class InMemoryItemRepository implements ItemRepository {
         return item;
     }
 
+    @Override
+    public List<Item> searchItems(String text) {
+        return items.values().stream()
+                .filter(i -> (i.getDescription().toLowerCase().contains(text.toLowerCase())
+                        || i.getName().toLowerCase().contains(text.toLowerCase())) && i.getAvailable())
+                .collect(Collectors.toList());
+    }
+
     public void deleteItem(long id) {
         items.remove(id);
     }

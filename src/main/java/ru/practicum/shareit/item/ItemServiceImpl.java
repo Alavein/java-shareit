@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.UserRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -38,6 +39,14 @@ public class ItemServiceImpl implements ItemService {
     public Item updateItem(long id, Item item) {
         log.info("Обновление информации о вещи = {} с id = {}", item, id);
         return itemRepository.updateItem(id, item);
+    }
+
+    @Override
+    public List<Item> searchItems(String text) {
+        log.info("Поиск вещи по ключевым словам = {}", text);
+        if (text.isEmpty())
+            return new ArrayList<>();
+        return itemRepository.searchItems(text);
     }
 
     @Override

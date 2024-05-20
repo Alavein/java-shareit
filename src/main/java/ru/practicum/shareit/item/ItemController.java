@@ -40,6 +40,13 @@ public class ItemController {
         return ItemMapper.toItemDto(itemService.updateItem(itemId, ItemMapper.fromItemDto(itemDto, userId)));
     }
 
+    @GetMapping("/search")
+    public List<ItemDto> searchItems(@RequestParam String text) {
+        return itemService.searchItems(text).stream()
+                .map(i -> ItemMapper.toItemDto(i))
+                .collect(Collectors.toList());
+    }
+
     @DeleteMapping("/{itemId}")
     public void deleteItem(@PathVariable long itemId) {
         itemService.deleteItem(itemId);
