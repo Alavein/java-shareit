@@ -27,9 +27,16 @@ public class ErrorHandler {
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorResponse handleUserNotFound(final DataNotFoundException e) {
+    public ErrorResponse handleUserNotFound(final ItemNotFoundException e) {
         log.warn("Ошибка. Вещь не найдена - {}", e.getMessage());
         return new ErrorResponse("Ошибка. Вещь не найдена.", e.getMessage());
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorResponse handleUserNotFound(final UserNotFoundException e) {
+        log.warn("Ошибка. Пользователь не найден - {}", e.getMessage());
+        return new ErrorResponse("Ошибка. Пользователь не найден", e.getMessage());
     }
 
     @ExceptionHandler

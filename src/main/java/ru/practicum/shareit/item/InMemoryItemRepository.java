@@ -2,7 +2,7 @@ package ru.practicum.shareit.item;
 
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
-import ru.practicum.shareit.exceptions.DataNotFoundException;
+import ru.practicum.shareit.exceptions.ItemNotFoundException;
 import ru.practicum.shareit.item.model.Item;
 
 import java.util.HashMap;
@@ -32,7 +32,7 @@ public class InMemoryItemRepository implements ItemRepository {
         if (items.containsKey(id)) {
             return items.get(id);
         } else {
-            throw new DataNotFoundException(String.format("Ошибка. Вещь с id = %d не найдена.", id));
+            throw new ItemNotFoundException(String.format("Ошибка. Вещь с id = %d не найдена.", id));
         }
     }
 
@@ -53,7 +53,7 @@ public class InMemoryItemRepository implements ItemRepository {
             if (item.getAvailable() != null)
                 items.get(id).setAvailable(item.getAvailable());
         } else {
-            throw new DataNotFoundException(
+            throw new ItemNotFoundException(
                     String.format("Вещь с id = %d владельца с id = %d не найдена", id, item.getOwner()));
         }
         return items.get(id);

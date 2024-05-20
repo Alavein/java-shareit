@@ -2,8 +2,8 @@ package ru.practicum.shareit.user;
 
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
-import ru.practicum.shareit.exceptions.DataNotFoundException;
 import ru.practicum.shareit.exceptions.UserAlreadyExists;
+import ru.practicum.shareit.exceptions.UserNotFoundException;
 import ru.practicum.shareit.user.model.User;
 
 import java.util.HashMap;
@@ -38,7 +38,7 @@ public class InMemoryUserRepository implements UserRepository {
         if (users.containsKey(id)) {
             return users.get(id);
         } else {
-            throw new DataNotFoundException(String.format("Ошибка. Пользователь с id = %d не найден.", id));
+            throw new UserNotFoundException(String.format("Ошибка. Пользователь с id = %d не найден.", id));
         }
     }
 
@@ -62,7 +62,7 @@ public class InMemoryUserRepository implements UserRepository {
             }
             return users.get(id);
         } else {
-            throw new DataNotFoundException(String.format("Ошибка. Пользователь с id = %d не найден.", id));
+            throw new UserNotFoundException(String.format("Ошибка. Пользователь с id = %d не найден.", id));
         }
     }
 
