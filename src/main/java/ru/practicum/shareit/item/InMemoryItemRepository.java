@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 public class InMemoryItemRepository implements ItemRepository {
 
     private long id = 1;
-    private HashMap<Long, Item> items = new HashMap<>();
+    private final HashMap<Long, Item> items = new HashMap<>();
 
     private long getNextId() {
         return id++;
