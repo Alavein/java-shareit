@@ -8,7 +8,7 @@ public interface ItemService {
 
     public Item createItem(Item item);
 
-    public Item getItemById(long id);
+    public Item getItemById(long itemId);
 
     public List<Item> getItemsByUser(long id);
 

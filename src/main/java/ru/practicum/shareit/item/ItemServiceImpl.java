@@ -3,6 +3,7 @@ package ru.practicum.shareit.item;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import ru.practicum.shareit.exceptions.DataNotFoundException;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.UserRepository;
 
@@ -18,6 +19,10 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public Item createItem(Item item) {
+        if (userRepository.getUserById(item.getOwner()) == null) {
+            throw new DataNotFoundException("Ошибка. Пользователь не найден.");
+        }
+
         log.info("Создание новой вещи = {}", item);
         userRepository.getUserById(item.getOwner());
         return itemRepository.createItem(item);
@@ -25,18 +30,34 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public Item getItemById(long id) {
+        if (itemRepository.getItemById(id) == null) {
+            throw new DataNotFoundException("Ошибка. Вещь не найдена.");
+        }
+
         log.info("Получние информации о вещи с id = {}", id);
         return itemRepository.getItemById(id);
     }
 
     @Override
     public List<Item> getItemsByUser(long id) {
+        if (userRepository.getUserById(id) == null) {
+            throw new DataNotFoundException("Ошибка. Пользователь не найден.");
+        }
+
         log.info("Получение вещей пользователя с id = {}", id);
         return itemRepository.getItemsByUser(id);
     }
 
     @Override
     public Item updateItem(long id, Item item) {
+
+        if (item == null) {
+            throw new DataNotFoundException("Ошибка. Вещь не найдена.");
+        }
+        if (userRepository.getUserById(id) == null) {
+            throw new DataNotFoundException("Ошибка. Пользователь не найден.");
+        }
+
         log.info("Обновление информации о вещи = {} с id = {}", item, id);
         return itemRepository.updateItem(id, item);
     }
@@ -51,6 +72,10 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public void deleteItem(long id) {
+        if (itemRepository.getItemById(id) == null) {
+            throw new DataNotFoundException("Ошибка. Вещь не найдена.");
+        }
+
         itemRepository.deleteItem(id);
     }
 }
