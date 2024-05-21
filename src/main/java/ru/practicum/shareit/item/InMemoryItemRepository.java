@@ -18,14 +18,13 @@ public class InMemoryItemRepository implements ItemRepository {
 
     @Override
     public Item createItem(Item item) {
-        long counter = ++id;
-        item.setId(counter);
-        items.put(counter, item);
+        item.setId(getNextId());
+        items.put(item.getId(), item);
         return item;
     }
 
     @Override
-    public Item getItemById(long id) {
+    public Item getItem(long id) {
         if (items.containsKey(id)) {
             return items.get(id);
         } else {
@@ -51,7 +50,7 @@ public class InMemoryItemRepository implements ItemRepository {
                 items.get(id).setAvailable(item.getAvailable());
         } else {
             throw new DataNotFoundException(
-                    String.format("Ошибка. Вещь с id = %d владельца с id = %d не найдена.", id, item.getOwner()));
+                    String.format("Вещь с id = %d владельца с id = %d не найдена", id, item.getOwner()));
         }
         return items.get(id);
     }

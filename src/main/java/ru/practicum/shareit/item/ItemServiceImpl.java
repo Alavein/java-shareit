@@ -17,22 +17,22 @@ public class ItemServiceImpl implements ItemService {
     private final UserRepository userRepository;
 
     @Override
-    public Item createItem(Item item) {
-        log.info("Создание новой вещи = {}", item);
-        userRepository.getUserById(item.getOwner());
-        return itemRepository.createItem(item);
-    }
-
-    @Override
     public Item getItemById(long id) {
         log.info("Получние информации о вещи с id = {}", id);
-        return itemRepository.getItemById(id);
+        return itemRepository.getItem(id);
     }
 
     @Override
     public List<Item> getItemsByUser(long id) {
         log.info("Получение вещей пользователя с id = {}", id);
         return itemRepository.getItemsByUser(id);
+    }
+
+    @Override
+    public Item createItem(Item item) {
+        log.info("Создание новой вещи = {}", item);
+        userRepository.getUserById(item.getOwner());
+        return itemRepository.createItem(item);
     }
 
     @Override

@@ -8,7 +8,7 @@ public interface ItemRepository {
 
     public Item createItem(Item item);
 
-    public Item getItemById(long id);
+    public Item getItem(long id);
 
     public List<Item> getItemsByUser(long id);
 
