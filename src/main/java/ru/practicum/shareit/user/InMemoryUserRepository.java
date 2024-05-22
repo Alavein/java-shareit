@@ -11,15 +11,15 @@ import java.util.List;
 @Primary
 @Component
 public class InMemoryUserRepository implements UserRepository {
-    private long id = 0;
+    private long id = 1;
     private final HashMap<Long, User> users = new HashMap<>();
 
     @Override
     public User createUser(User user) {
         long counter = ++id;
-        user.setId(id);
+        user.setId(counter);
         users.put(counter, user);
-        return user;
+        return users.get(counter);
     }
 
     @Override
