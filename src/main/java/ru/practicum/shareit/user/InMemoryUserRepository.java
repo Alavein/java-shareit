@@ -3,6 +3,7 @@ package ru.practicum.shareit.user;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 import ru.practicum.shareit.exceptions.DataNotFoundException;
+import ru.practicum.shareit.exceptions.UserAlreadyExists;
 import ru.practicum.shareit.user.model.User;
 
 import java.util.HashMap;
@@ -18,10 +19,13 @@ public class InMemoryUserRepository implements UserRepository {
 
     @Override
     public User createUser(User user) {
-        long counter = ++id;
-        user.setId(counter);
-        users.put(counter, user);
-        return users.get(counter);
+        if (!checkIfExists(user)) {
+            user.setId(getNextId());
+            users.put(user.getId(), user);
+            return user;
+        } else {
+            throw new UserAlreadyExists(String.format("Ошибка. Пользователь с адресом почты = %s не найден.", user.getEmail()));
+        }
     }
 
     @Override
