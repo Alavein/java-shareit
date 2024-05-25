@@ -3,8 +3,10 @@ package ru.practicum.shareit.item;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import ru.practicum.shareit.exceptions.DataNotFoundException;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.UserRepository;
+import ru.practicum.shareit.user.model.User;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +33,10 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public Item createItem(Item item) {
         log.info("Создание новой вещи = {}", item);
-        userRepository.getUserById(item.getOwner());
+        User userById = userRepository.getUserById(item.getOwner());
+        if (userById == null){
+            throw new DataNotFoundException("Ошибка. Пользователь не найден.");
+        }
         return itemRepository.createItem(item);
     }
 
