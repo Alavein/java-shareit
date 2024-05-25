@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 @Component
 public class InMemoryItemRepository implements ItemRepository {
 
-    private long id = 1;
+    private long id = 0;
     private final HashMap<Long, Item> items = new HashMap<>();
 
     @Override
