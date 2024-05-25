@@ -34,7 +34,7 @@ public class ItemServiceImpl implements ItemService {
     public Item createItem(Item item) {
         log.info("Создание новой вещи = {}", item);
         User userById = userRepository.getUserById(item.getOwner());
-        if (userById == null){
+        if (userById == null) {
             throw new DataNotFoundException("Ошибка. Пользователь не найден.");
         }
         return itemRepository.createItem(item);
