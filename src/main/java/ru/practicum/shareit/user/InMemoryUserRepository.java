@@ -11,7 +11,7 @@ import java.util.List;
 @Primary
 @Component
 public class InMemoryUserRepository implements UserRepository {
-    private long id = 1;
+    private long id = 0;
     private final HashMap<Long, User> users = new HashMap<>();
 
     @Override

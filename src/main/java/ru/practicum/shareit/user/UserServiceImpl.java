@@ -22,7 +22,7 @@ public class UserServiceImpl implements UserService {
     public UserDto createUser(UserDto userDto) {
         for (User user : userRepository.getAllUsers()) {
             if (userDto.getEmail().equals(user.getEmail())) {
-                throw new UserAlreadyExists("Ошибка. Этот адрес электроенной почты уже используется");
+                throw new UserAlreadyExists("Ошибка. Этот адрес электронной почты уже используется");
             }
         }
 
