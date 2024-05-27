@@ -8,9 +8,6 @@ import ru.practicum.shareit.validation.Update;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 
-/**
- * TODO Sprint add-controllers.
- */
 @Data
 @Builder(toBuilder = true)
 public class User {

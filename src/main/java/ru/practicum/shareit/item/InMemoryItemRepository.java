@@ -1,6 +1,5 @@
 package ru.practicum.shareit.item;
 
-import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 import ru.practicum.shareit.exceptions.DataNotFoundException;
 import ru.practicum.shareit.item.model.Item;
@@ -9,7 +8,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Primary
 @Component
 public class InMemoryItemRepository implements ItemRepository {
 

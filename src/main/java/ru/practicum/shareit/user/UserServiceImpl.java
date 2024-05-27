@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exceptions.DataNotFoundException;
-import ru.practicum.shareit.exceptions.UserAlreadyExists;
+import ru.practicum.shareit.exceptions.UserAlreadyExistsException;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.model.User;
 
@@ -22,7 +22,7 @@ public class UserServiceImpl implements UserService {
     public UserDto createUser(UserDto userDto) {
         for (User user : userRepository.getAllUsers()) {
             if (userDto.getEmail().equals(user.getEmail())) {
-                throw new UserAlreadyExists("Ошибка. Этот адрес электронной почты уже используется");
+                throw new UserAlreadyExistsException("Ошибка. Этот адрес электронной почты уже используется");
             }
         }
 
@@ -65,7 +65,7 @@ public class UserServiceImpl implements UserService {
                 for (User us : userRepository.getAllUsers()) {
                     if (userDto.getEmail().equals(us.getEmail())) {
                         if (!Objects.equals(userDto.getId(), us.getId())) {
-                            throw new UserAlreadyExists("Ошибка. Этот адрес электроенной почты уже используется");
+                            throw new UserAlreadyExistsException("Ошибка. Этот адрес электроенной почты уже используется");
                         }
                     }
                 }

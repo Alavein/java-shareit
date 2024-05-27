@@ -20,7 +20,7 @@ public class ErrorHandler {
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.CONFLICT)
-    public ErrorResponse handleUserAlreadyExists(final UserAlreadyExists e) {
+    public ErrorResponse handleUserAlreadyExists(final UserAlreadyExistsException e) {
         log.warn("Ошибка. Пользователь уже существует - {}", e.getMessage());
         return new ErrorResponse("UserAlreadyExists", e.getMessage());
     }
