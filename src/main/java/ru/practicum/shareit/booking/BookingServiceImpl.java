@@ -29,7 +29,7 @@ public class BookingServiceImpl implements BookingService {
     @Override
     public BookingDto getBooking(Integer bookingId, Integer userId) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new DataNotFoundException("Ошибка. Пользователь не найдено.");
+                .orElseThrow(() -> new DataNotFoundException("Ошибка. Пользователь не найдено."));
         Booking booking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new DataNotFoundException("Ошибка. Бронирование не найдено."));
 
