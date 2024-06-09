@@ -68,7 +68,7 @@ public class BookingServiceImpl implements BookingService {
                 booking = bookingRepository.findAllByBookerAndStatusEquals(user, Status.REJECTED, sort);
                 break;
             default:
-                throw new BadRequestException("Ошибка. Неизвестный статус.");
+                throw new BadRequestException("Unknown state: UNSUPPORTED_STATUS");
         }
 
         return booking.stream().map(BookingMapper::toBookingDto).collect(Collectors.toList());
@@ -102,7 +102,7 @@ public class BookingServiceImpl implements BookingService {
                 booking = bookingRepository.findAllByItemOwnerAndStatusEquals(user, Status.REJECTED, sort);
                 break;
             default:
-                throw new BadRequestException("Ошибка. Неизвестный статус.");
+                throw new BadRequestException("Unknown state: UNSUPPORTED_STATUS");
         }
 
         return booking.stream().map(BookingMapper::toBookingDto).collect(Collectors.toList());
@@ -132,7 +132,7 @@ public class BookingServiceImpl implements BookingService {
 
         booking = bookingRepository.save(booking);
 
-        return BookingMapper.toBookingDto(booking); // из booking в BookingDto
+        return BookingMapper.toBookingDto(booking);
     }
 
     @Override
