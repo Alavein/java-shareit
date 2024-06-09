@@ -22,12 +22,12 @@ public class ItemMapper {
     }
 
     public static ItemDto toItemDto(Item item) {
-        Long request = item.getRequest() == null ? null : item.getRequest().getId();
-        return ItemDto.builder().id(item.getId())
+        return ItemDto.builder()
+                .id(item.getId())
                 .name(item.getName())
                 .description(item.getDescription())
                 .available(item.getAvailable())
-                .request(request)
+                .request(item.getRequest() != null ? item.getRequest().getId() : null)
                 .build();
     }
 
