@@ -1,44 +1,39 @@
 package ru.practicum.shareit.item.model;
 
-import lombok.*;
-import org.hibernate.annotations.DynamicUpdate;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import ru.practicum.shareit.request.model.ItemRequest;
+import ru.practicum.shareit.user.model.User;
+import ru.practicum.shareit.validation.Create;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
-import ru.practicum.shareit.request.model.ItemRequest;
-import ru.practicum.shareit.user.model.User;
-
 @Data
 @Builder
-@Entity
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
-@Table(name = "items")
 @AllArgsConstructor
 @NoArgsConstructor
-@DynamicUpdate
+@Entity
+@Table(name = "items")
 public class Item {
 
     @Id
-    @EqualsAndHashCode.Include
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
-    @NotBlank
-    @Column
+    private Integer id;
+    @NotBlank(groups = {Create.class})
     private String name;
-    @NotBlank
-    @Column
+    @NotBlank(groups = {Create.class})
     private String description;
-    @NotNull
-    @Column
+    @NotNull(groups = {Create.class})
+    @Column(name = "is_available")
     private Boolean available;
-    @ManyToOne(fetch = FetchType.LAZY)
-    @ToString.Exclude
-    @JoinColumn(name = "owner")
+    @ManyToOne
+    @JoinColumn(name = "id_owner", referencedColumnName = "id")
     private User owner;
-    @ManyToOne(fetch = FetchType.LAZY)
-    @ToString.Exclude
-    @JoinColumn(name = "request")
+    @ManyToOne
+    @JoinColumn(name = "id_request", referencedColumnName = "id")
     private ItemRequest request;
 }

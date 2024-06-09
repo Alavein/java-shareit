@@ -3,134 +3,169 @@ package ru.practicum.shareit.item;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import ru.practicum.shareit.booking.BookingMapper;
+import org.springframework.transaction.annotation.Transactional;
+import ru.practicum.shareit.booking.Booking;
 import ru.practicum.shareit.booking.BookingRepository;
-import ru.practicum.shareit.booking.dto.BookingDtoForItem;
+import ru.practicum.shareit.booking.Status;
 import ru.practicum.shareit.exceptions.BadRequestException;
 import ru.practicum.shareit.exceptions.DataNotFoundException;
 import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
-import ru.practicum.shareit.item.dto.ItemDtoBooking;
+import ru.practicum.shareit.item.dto.ItemDtoComments;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.UserRepository;
 import ru.practicum.shareit.user.model.User;
 
-
-import org.springframework.transaction.annotation.Transactional;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
-@RequiredArgsConstructor
 @Transactional(readOnly = true)
+@RequiredArgsConstructor
 public class ItemServiceImpl implements ItemService {
+
     private final ItemRepository itemRepository;
     private final UserRepository userRepository;
     private final BookingRepository bookingRepository;
     private final CommentRepository commentRepository;
 
     @Override
-    public ItemDtoBooking getItem(long itemId, long userId) {
-        Item item = itemRepository.findById(itemId)
-                .orElseThrow(() -> new DataNotFoundException("Ошибка. Предмет не найден."));
-        return setBookingsAndComments(userId, List.of(item)).get(0);
+    public List<ItemDtoComments> getItemsOfUser(Integer userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new DataNotFoundException("Ошибка. Пользователь не найден."));
+
+        List<ItemDtoComments> itemsDtoComments = itemRepository.findAllByOwnerId(userId)
+                .stream()
+                .map(ItemMapper::toItemDtoComments)
+                .collect(Collectors.toList());
+
+        for (ItemDtoComments itemDtoComments : itemsDtoComments) {
+            itemDtoComments.setComments(commentRepository.findAllByItemId(itemDtoComments.getId())
+                    .stream()
+                    .map(CommentMapper::toCommentDto)
+                    .collect(Collectors.toList()));
+
+            bookingRepository
+                    .findFirstByItemIdAndStartLessThanEqualAndStatus(itemDtoComments.getId(), now(), Status.APPROVED,
+                            Sort.by(Sort.Direction.DESC, "start"))
+                    .ifPresent(value -> itemDtoComments
+                            .setLastBooking(new ItemDtoComments.BookingDto(value.getId(), value.getBooker().getId())));
+
+            bookingRepository
+                    .findFirstByItemIdAndStartAfterAndStatusEquals(itemDtoComments.getId(), now(), Status.APPROVED,
+                            Sort.by(Sort.Direction.ASC, "start"))
+                    .ifPresent(value -> itemDtoComments
+                            .setNextBooking(new ItemDtoComments.BookingDto(value.getId(), value.getBooker().getId())));
+        }
+
+        return itemsDtoComments;
     }
 
     @Override
-    public List<ItemDtoBooking> getItemsByUser(long userId) {
-        List<Item> userItems = itemRepository.findAllByOwnerIdOrderByIdAsc(userId);
-        return setBookingsAndComments(userId, userItems);
+    public ItemDtoComments getItemById(Integer itemId, Integer userId) {
+        Item item = itemRepository.findById(itemId)
+                .orElseThrow(() -> new DataNotFoundException("Ошибка. Предмет не найден."));
+
+        ItemDtoComments itemDtoComments = ItemMapper.toItemDtoComments(item);
+        itemDtoComments.setComments(commentRepository.findAllByItemId(itemId)
+                .stream()
+                .map(CommentMapper::toCommentDto)
+                .collect(Collectors.toList()));
+        if (item.getOwner().getId().equals(userId)) {
+            bookingRepository
+                    .findFirstByItemIdAndStartLessThanEqualAndStatus(itemDtoComments.getId(), now(), Status.APPROVED,
+                            Sort.by(Sort.Direction.DESC, "start"))
+                    .ifPresent(value -> itemDtoComments
+                            .setLastBooking(new ItemDtoComments.BookingDto(value.getId(), value.getBooker().getId())));
+
+            bookingRepository
+                    .findFirstByItemIdAndStartAfterAndStatusEquals(itemDtoComments.getId(), now(), Status.APPROVED,
+                            Sort.by(Sort.Direction.ASC, "start"))
+                    .ifPresent(value -> itemDtoComments
+                            .setNextBooking(new ItemDtoComments.BookingDto(value.getId(), value.getBooker().getId())));
+        }
+        return itemDtoComments;
+    }
+
+    @Override
+    public List<ItemDto> getItems(String description) {
+        List<Item> items = new ArrayList<>();
+
+        if (description != null && !description.isBlank()) {
+            items = itemRepository
+                    .findAllByNameContainingIgnoreCaseOrDescriptionContainingIgnoreCaseAndAvailable(description,
+                            description, true);
+        }
+
+        return items.stream().map(ItemMapper::toItemDto).collect(Collectors.toList());
     }
 
     @Override
     @Transactional
-    public ItemDto createItem(long userId, ItemDto itemDto) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new DataNotFoundException("Ошибка. Пользователь" +
-                " не найден."));
-        Item item = ItemMapper.fromItemDto(itemDto, user, null);
+    public ItemDto updateItem(ItemDto itemDto, Integer id, Integer userId) {
+        Item item = itemRepository.findById(id)
+                .orElseThrow(() -> new DataNotFoundException("Ошибка. Предмет не найден."));
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new DataNotFoundException("Ошибка. Пользователь не найден."));
+
+        if (!item.getOwner().getId().equals(userId)) {
+            throw new DataNotFoundException("Ошибка. Невозможно обновить данные.");
+        }
+
+        itemRepository.save(ItemMapper.toItemUpdate(itemDto, item));
+
+        return ItemMapper.toItemDto(item);
+    }
+
+    @Override
+    @Transactional
+    public ItemDto addItem(ItemDto itemDto, Integer userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new DataNotFoundException("Ошибка. Пользователь не найден."));
+
+        Item item = ItemMapper.toItem(itemDto);
+        item.setOwner(user);
+
         return ItemMapper.toItemDto(itemRepository.save(item));
     }
 
     @Override
     @Transactional
-    public ItemDto updateItem(long id, ItemDto itemDto, long userId) {
-        return itemRepository.findById(id)
-                .map(i -> {
-                    if (i.getOwner().getId() != userId) {
-                        throw new DataNotFoundException("Ошибка. Пользователь не найден.");
-                    }
-                    if (itemDto.getName() != null)
-                        i.setName(itemDto.getName());
-                    if (itemDto.getDescription() != null)
-                        i.setDescription(itemDto.getDescription());
-                    if (itemDto.getAvailable() != null)
-                        i.setAvailable(itemDto.getAvailable());
-                    return ItemMapper.toItemDto(itemRepository.save(i));
-                }).orElseThrow(() -> new DataNotFoundException("Ошибка. Предмет не найден."));
-    }
+    public CommentDto addComment(Integer itemId, Integer userId, CommentDto commentDto) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new DataNotFoundException("Ошибка. Пользователь не найден."));
 
-    @Override
-    public List<ItemDto> searchItems(String text) {
-        if (text.isEmpty())
-            return new ArrayList<>();
-        return ItemMapper.mapToItemDto(itemRepository.searchItems(text));
+        Item item = itemRepository.findById(itemId)
+                .orElseThrow(() -> new DataNotFoundException("Ошибка. Предмет не найден."));
+
+        List<Booking> bookingUser = bookingRepository.findAllByBooker(user,
+                Sort.by(Sort.Direction.DESC, "start"));
+
+        if (!bookingUser.isEmpty()) {
+            for (Booking booking : bookingUser) {
+                if (booking.getItem().getId().equals(itemId) && booking.getStatus().equals(Status.APPROVED)
+                        && booking.getEnd().isBefore(now())) {
+                    Comment comment = CommentMapper.toComment(commentDto);
+                    comment.setItem(item);
+                    comment.setAuthor(user);
+                    comment.setCreated(now());
+                    commentRepository.save(comment);
+                    return CommentMapper.toCommentDto(comment);
+                }
+            }
+        }
+
+        throw new BadRequestException("Ошибка. Невозможно оставить комментарий");
     }
 
     @Override
     @Transactional
-    public CommentDto createComment(long itemId, CommentDto commentDto, long authorId) {
+    public void deleteItem(Integer itemId) {
         Item item = itemRepository.findById(itemId)
-                .orElseThrow(() -> new DataNotFoundException("Ошибка. Предмет с id = " + itemId + " не найден."));
-        User user = userRepository.findById(authorId)
-                .orElseThrow(() -> new DataNotFoundException("Пользователь с id = " + authorId + " не найден."));
+                .orElseThrow(() -> new DataNotFoundException("Ошибка. Предмет не найден."));
 
-        Comment comment = CommentMapper.toComment(user, item, commentDto);
-
-        if (!bookingRepository.findByBookerIdAndItemIdAndEndBefore(
-                authorId,
-                itemId,
-                LocalDateTime.now(),
-                Sort.by(Sort.Direction.DESC, "start")).isEmpty()) {
-
-            comment.setItem(item);
-            comment.setAuthor(user);
-            comment.setCreated(LocalDateTime.now());
-            commentRepository.save(comment);
-            return CommentMapper.toCommentDto(comment);
-        } else
-            throw new BadRequestException("Ошибка. Этот пользователь не может оставить комментарий.");
-    }
-
-    private List<ItemDtoBooking> setBookingsAndComments(long userId, List<Item> items) {
-        LocalDateTime now = LocalDateTime.now();
-
-        List<Long> ids = items.stream()
-                .map(Item::getId)
-                .collect(Collectors.toList());
-        Map<Long, BookingDtoForItem> last = bookingRepository
-                .findBookingsLast(ids, now, userId, Sort.by(Sort.Direction.DESC, "start")).stream()
-                .map(BookingMapper::toBookingDtoForItem)
-                .collect(Collectors.toMap(BookingDtoForItem::getItemId, item -> item, (a, b) -> a));
-        Map<Long, BookingDtoForItem> next = bookingRepository
-                .findBookingsNext(ids, now, userId, Sort.by(Sort.Direction.DESC, "start")).stream()
-                .map(BookingMapper::toBookingDtoForItem)
-                .collect(Collectors.toMap(BookingDtoForItem::getItemId, item -> item, (a, b) -> b));
-        Map<Long, List<Comment>> comments = commentRepository.findByItemId_IdIn(ids).stream()
-                .collect(Collectors.groupingBy(comment -> comment.getItem().getId()));
-
-        List<ItemDtoBooking> result = items.stream()
-                .map(ItemMapper::toItemDtoBooking)
-                .collect(Collectors.toList());
-        for (ItemDtoBooking item : result) {
-            item.setLastBooking(last.get(item.getId()));
-            item.setNextBooking(next.get(item.getId()));
-            item.getComments().addAll(comments.getOrDefault(item.getId(), List.of()).stream()
-                    .map(CommentMapper::toCommentDto).collect(Collectors.toList()));
-        }
-
-        return result;
+        itemRepository.deleteById(itemId);
     }
 }

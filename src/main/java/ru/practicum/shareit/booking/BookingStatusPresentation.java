@@ -7,5 +7,6 @@ public enum BookingStatusPresentation {
     PAST,
     FUTURE,
     WAITING,
-    REJECTED
+    REJECTED,
+    UNSUPPORTED_STATUS
 }

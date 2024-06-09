@@ -2,89 +2,39 @@ package ru.practicum.shareit.booking;
 
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
-import org.springframework.stereotype.Repository;
+import ru.practicum.shareit.user.model.User;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
-@Repository
-public interface BookingRepository extends JpaRepository<Booking, Long> {
+public interface BookingRepository extends JpaRepository<Booking, Integer> {
 
-    List<Booking> findAllByBookerIdOrderByStartDesc(long userId);
+    List<Booking> findAllByBooker(User booker, Sort sort);
 
-    List<Booking> findByItemOwnerId(long ownerId, Sort sort);
+    List<Booking> findAllByBookerAndStartBeforeAndEndAfter(User booker, LocalDateTime start,
+                                                           LocalDateTime end, Sort sort);
 
-    List<Booking> findByBookerIdAndItemIdAndEndBefore(long bookerId, long itemId, LocalDateTime end, Sort sort);
+    List<Booking> findAllByBookerAndEndBefore(User booker, LocalDateTime end, Sort sort);
 
-    @Query("select b from " +
-            "Booking b " +
-            "where ?2 between b.start and b.end " +
-            "and b.booker.id = ?1 ")
-    List<Booking> findByBookerCurrent(long userId, LocalDateTime now, Sort sort);
+    List<Booking> findAllByBookerAndStartAfter(User booker, LocalDateTime start, Sort sort);
 
-    @Query("select b from " +
-            "Booking b " +
-            "where b.end < ?2 " +
-            "and b.booker.id = ?1 ")
-    List<Booking> findByBookerPast(long userId, LocalDateTime end, Sort sort);
+    List<Booking> findAllByBookerAndStatusEquals(User booker, Status status, Sort sort);
 
-    @Query("select b " +
-            "from Booking b " +
-            "where b.start > ?2 " +
-            "and b.booker.id = ?1 ")
-    List<Booking> findByBookerFuture(long userId, LocalDateTime start, Sort sort);
+    List<Booking> findAllByItemOwner(User owner, Sort sort);
 
-    @Query("select b from " +
-            "Booking b " +
-            "where b.status = ?2 " +
-            "and b.booker.id = ?1 ")
-    List<Booking> findByBookerAndStatus(long userId, Status status, Sort sort);
+    List<Booking> findAllByItemOwnerAndStartBeforeAndEndAfter(User owner, LocalDateTime start,
+                                                              LocalDateTime end, Sort sort);
 
-    @Query("select b from " +
-            "Booking b " +
-            "where ?2 between b.start and b.end " +
-            "and b.item.owner.id = ?1 ")
-    List<Booking> findByItemOwnerCurrent(long userId, LocalDateTime now, Sort sort);
+    List<Booking> findAllByItemOwnerAndEndBefore(User owner, LocalDateTime end, Sort sort);
 
-    @Query("select b from " +
-            "Booking b " +
-            "where b.end < ?2 " +
-            "and b.item.owner.id = ?1 ")
-    List<Booking> findByItemOwnerPast(long userId, LocalDateTime end, Sort sort);
+    List<Booking> findAllByItemOwnerAndStartAfter(User owner, LocalDateTime start, Sort sort);
 
-    @Query("select b " +
-            "from Booking b " +
-            "where b.start > ?2 " +
-            "and b.item.owner.id = ?1 ")
-    List<Booking> findByItemOwnerFuture(long userId, LocalDateTime start, Sort sort);
+    List<Booking> findAllByItemOwnerAndStatusEquals(User owner, Status status, Sort sort);
 
-    @Query("select b from " +
-            "Booking b " +
-            "where b.status = ?2 " +
-            "and b.item.owner.id = ?1 ")
-    List<Booking> findByItemOwnerAndStatus(long userId, Status status, Sort sort);
+    Optional<Booking> findFirstByItemIdAndStartLessThanEqualAndStatus(Integer itemId, LocalDateTime now,
+                                                                      Status status, Sort sort);
 
-    @Query("select distinct b " +
-            "from Booking b " +
-            "where b.start <= :now " +
-            "and b.item.id in :ids " +
-            "and b.status = 'APPROVED' " +
-            "and b.item.owner.id = :userId ")
-    List<Booking> findBookingsLast(@Param("ids") List<Long> ids,
-                                   @Param("now") LocalDateTime now,
-                                   @Param("userId") long userId,
-                                   Sort sort);
-
-    @Query("select distinct b " +
-            "from Booking b " +
-            "where b.start > :now " +
-            "and b.status = 'APPROVED' " +
-            "and b.item.id in :ids " +
-            "and b.item.owner.id = :userId ")
-    List<Booking> findBookingsNext(@Param("ids") List<Long> ids,
-                                   @Param("now") LocalDateTime now,
-                                   @Param("userId") long userId,
-                                   Sort sort);
+    Optional<Booking> findFirstByItemIdAndStartAfterAndStatusEquals(Integer itemId, LocalDateTime now,
+                                                                    Status status, Sort sort);
 }

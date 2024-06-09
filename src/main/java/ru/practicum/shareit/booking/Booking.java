@@ -1,47 +1,39 @@
 package ru.practicum.shareit.booking;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-
-import lombok.*;
-import org.hibernate.annotations.DynamicUpdate;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.model.User;
 
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 
 @Data
 @Builder
-@Entity
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
-@Table(name = "bookings")
 @AllArgsConstructor
 @NoArgsConstructor
-@DynamicUpdate
+@Entity
+@Table(name = "bookings")
 public class Booking {
-
     @Id
-    @EqualsAndHashCode.Include
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
-    @Column(name = "start_date")
+    private Integer id;
+    @NotNull
+    @Column(name = "start_date", nullable = false)
     private LocalDateTime start;
-    @Column(name = "end_date")
+    @NotNull
+    @Column(name = "end_date", nullable = false)
     private LocalDateTime end;
+    @NotNull
     @ManyToOne
-    @JoinColumn(name = "item")
+    @JoinColumn(name = "id_item", referencedColumnName = "id", nullable = false)
     private Item item;
     @ManyToOne
-    @JoinColumn(name = "booker")
+    @JoinColumn(name = "id_booker", referencedColumnName = "id", nullable = false)
     private User booker;
     @Enumerated(EnumType.STRING)
     private Status status;

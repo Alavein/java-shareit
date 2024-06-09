@@ -6,7 +6,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface CommentRepository extends JpaRepository<Comment, Long> {
-
-    List<Comment> findByItemId_IdIn(List<Long> ids);
+public interface CommentRepository extends JpaRepository<Comment, Integer> {
+    List<Comment> findAllByItemId(Integer itemId);
 }

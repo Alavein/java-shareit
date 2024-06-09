@@ -1,36 +1,30 @@
 package ru.practicum.shareit.request.model;
 
-import lombok.*;
-import org.hibernate.annotations.DynamicUpdate;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import ru.practicum.shareit.user.model.User;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Data
 @Builder
-@Entity
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
-@Table(name = "item_requests")
 @AllArgsConstructor
 @NoArgsConstructor
-@DynamicUpdate
+@Entity
+@Table(name = "requests")
 public class ItemRequest {
 
     @Id
-    @EqualsAndHashCode.Include
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
     @NotBlank
-    @Column
     private String description;
-    @NotNull
-    @ManyToOne(fetch = FetchType.LAZY)
-    @ToString.Exclude
-    @JoinColumn(name = "requestor")
+    @ManyToOne
+    @JoinColumn(name = "id_requestor", referencedColumnName = "id")
     private User requestor;
-    @Column
-    private LocalDate created;
+    private LocalDateTime created;
 }
