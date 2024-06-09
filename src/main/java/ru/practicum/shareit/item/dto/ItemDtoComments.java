@@ -22,6 +22,7 @@ public class ItemDtoComments {
     private BookingDto lastBooking;
     private BookingDto nextBooking;
     private List<CommentDto> comments;
+
     @Data
     public static class BookingDto {
         private final Integer id;
