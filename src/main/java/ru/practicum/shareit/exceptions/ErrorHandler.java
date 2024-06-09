@@ -12,30 +12,30 @@ public class ErrorHandler {
     @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponse handleObjectNotFoundException(final DataNotFoundException exception) {
-        return new ErrorResponse("Ошибка. Данные не найдены.", exception.getMessage());
+        return new ErrorResponse(exception.getMessage());
     }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.CONFLICT)
     public ErrorResponse handleValidationException(final UserAlreadyExistsException exception) {
-        return new ErrorResponse("Ошибка валидации.", exception.getMessage());
+        return new ErrorResponse(exception.getMessage());
     }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleMethodArgumentNotValidException(final MethodArgumentNotValidException exception) {
-        return new ErrorResponse("Ошибка.", exception.getMessage());
+        return new ErrorResponse(exception.getMessage());
     }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleBadRequestException(final BadRequestException exception) {
-        return new ErrorResponse("Ошибка.", exception.getMessage());
+        return new ErrorResponse(exception.getMessage());
     }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ErrorResponse handleServerError(final Throwable exception) {
-        return new ErrorResponse("Ошибка.", exception.getMessage());
+        return new ErrorResponse(exception.getMessage());
     }
 }
