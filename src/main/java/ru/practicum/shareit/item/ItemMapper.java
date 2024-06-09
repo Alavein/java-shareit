@@ -1,17 +1,16 @@
 package ru.practicum.shareit.item;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemDtoBooking;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.user.model.User;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
-
 public class ItemMapper {
-    
     public static Item fromItemDto(ItemDto itemDto, User owner, ItemRequest request) {
         return Item.builder().id(itemDto.getId())
                 .name(itemDto.getName())
