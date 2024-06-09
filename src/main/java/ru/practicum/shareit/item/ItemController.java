@@ -16,7 +16,7 @@ public class ItemController {
     private final ItemService itemService;
 
     @GetMapping("/{id}")
-    public ItemDtoBooking getItem(@RequestHeader(name = "X-Sharer-User-Id") long ownerId, @PathVariable long id) {
+    public ItemDtoBooking getItemById(@RequestHeader(name = "X-Sharer-User-Id") long ownerId, @PathVariable long id) {
         return itemService.getItem(id, ownerId);
     }
 
