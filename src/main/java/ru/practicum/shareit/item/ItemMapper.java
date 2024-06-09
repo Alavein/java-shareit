@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class ItemMapper {
+    
     public static Item fromItemDto(ItemDto itemDto, User owner, ItemRequest request) {
         return Item.builder().id(itemDto.getId())
                 .name(itemDto.getName())
