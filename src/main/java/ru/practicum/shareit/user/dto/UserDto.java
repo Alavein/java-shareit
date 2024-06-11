@@ -12,7 +12,7 @@ import javax.validation.constraints.NotBlank;
 @Builder
 public class UserDto {
 
-    private long id;
+    private Integer id;
     @NotBlank(groups = {Create.class}, message = "Ошибка. Некорректное имя.")
     private String name;
     @NotBlank(groups = { Create.class }, message = "Ошибка. Некорректная почта.")

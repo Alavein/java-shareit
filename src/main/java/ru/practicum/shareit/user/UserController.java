@@ -7,23 +7,30 @@ import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.validation.Create;
 import ru.practicum.shareit.validation.Update;
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import java.util.List;
 
 @RestController
-@RequestMapping(path = "/users")
+@RequestMapping("/users")
 @RequiredArgsConstructor
 public class UserController {
-
     private final UserService userService;
 
     @GetMapping
-    public List<UserDto> getAllUsers() {
-        return userService.getAllUsers();
+    public List<UserDto> getAllUsers(@RequestParam(defaultValue = "0") @Min(0) Integer page,
+                                 @RequestParam(defaultValue = "30") @Min(10) @Max(100) Integer size) {
+        return userService.getAllUsers(page, size);
     }
 
     @GetMapping("/{id}")
-    public UserDto getUserById(@PathVariable long id) {
+    public UserDto getUserById(@PathVariable Integer id) {
         return userService.getUserById(id);
+    }
+
+    @PatchMapping("/{id}")
+    public UserDto updateUser(@Validated(Update.class) @RequestBody UserDto userDto, @PathVariable Integer id) {
+        return userService.updateUser(userDto, id);
     }
 
     @PostMapping
@@ -31,13 +38,8 @@ public class UserController {
         return userService.createUser(userDto);
     }
 
-    @PatchMapping("/{id}")
-    public UserDto updateUser(@PathVariable long id, @Validated(Update.class) @RequestBody UserDto userDto) {
-        return userService.updateUser(id, userDto);
-    }
-
     @DeleteMapping("/{id}")
-    public void deleteUser(@PathVariable long id) {
+    public void deleteUser(@PathVariable Integer id) {
         userService.deleteUser(id);
     }
 }
