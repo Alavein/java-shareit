@@ -2,7 +2,6 @@ package ru.practicum.shareit.request.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
 import lombok.NoArgsConstructor;
 import ru.practicum.shareit.user.model.User;
 
@@ -11,7 +10,6 @@ import javax.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
 
 @Builder
-@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -27,4 +25,35 @@ public class ItemRequest {
     private User requestor;
     private LocalDateTime created;
 
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public User getRequestor() {
+        return requestor;
+    }
+
+    public void setRequestor(User requestor) {
+        this.requestor = requestor;
+    }
+
+    public LocalDateTime getCreated() {
+        return created;
+    }
+
+    public void setCreated(LocalDateTime created) {
+        this.created = created;
+    }
 }
