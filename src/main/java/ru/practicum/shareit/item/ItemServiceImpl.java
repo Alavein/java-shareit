@@ -1,6 +1,7 @@
 package ru.practicum.shareit.item;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,6 +14,8 @@ import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemDtoComments;
 import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.request.ItemRequestRepository;
+import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.user.UserRepository;
 import ru.practicum.shareit.user.model.User;
 
@@ -31,13 +34,14 @@ public class ItemServiceImpl implements ItemService {
     private final UserRepository userRepository;
     private final BookingRepository bookingRepository;
     private final CommentRepository commentRepository;
+    private final ItemRequestRepository itemRequestRepository;
 
     @Override
-    public List<ItemDtoComments> getItemsOfUser(Integer userId) {
+    public List<ItemDtoComments> getItemsOfUser(Integer userId, Integer from, Integer page) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new DataNotFoundException("Ошибка. Пользователь не найден."));
 
-        List<ItemDtoComments> itemsDtoComments = itemRepository.findAllByOwnerId(userId)
+        List<ItemDtoComments> itemsDtoComments = itemRepository.findAllByOwnerId(userId, PageRequest.of(from, page))
                 .stream()
                 .map(ItemMapper::toItemDtoComments)
                 .collect(Collectors.toList());
@@ -91,13 +95,13 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public List<ItemDto> getItems(String description) {
+    public List<ItemDto> getItems(String description, Integer from, Integer size) {
         List<Item> items = new ArrayList<>();
 
         if (description != null && !description.isBlank()) {
             items = itemRepository
                     .findAllByNameContainingIgnoreCaseOrDescriptionContainingIgnoreCaseAndAvailable(description,
-                            description, true);
+                            description, true, PageRequest.of(from, size));
         }
 
         return items.stream().map(ItemMapper::toItemDto).collect(Collectors.toList());
@@ -128,9 +132,18 @@ public class ItemServiceImpl implements ItemService {
                 .orElseThrow(() -> new DataNotFoundException("Ошибка. Пользователь не найден."));
 
         Item item = ItemMapper.toItem(itemDto);
-        item.setOwner(user);
 
-        return ItemMapper.toItemDto(itemRepository.save(item));
+        if (itemDto.getRequestId() != null) {
+            ItemRequest itemRequest = itemRequestRepository.findById(itemDto.getRequestId())
+                    .orElseThrow(() -> new DataNotFoundException("Ошибка. Запрос не найден."));
+
+            item.setRequest(itemRequest);
+        }
+
+        item.setOwner(user);
+        itemRepository.save(item);
+
+        return ItemMapper.toItemDto(item);
     }
 
     @Override
@@ -142,7 +155,7 @@ public class ItemServiceImpl implements ItemService {
         Item item = itemRepository.findById(itemId)
                 .orElseThrow(() -> new DataNotFoundException("Ошибка. Предмет не найден."));
 
-        List<Booking> bookingUser = bookingRepository.findAllByBooker(user,
+        List<Booking> bookingUser = bookingRepository.findAllByBookerId(user.getId(),
                 Sort.by(Sort.Direction.DESC, "start"));
 
         if (!bookingUser.isEmpty()) {
