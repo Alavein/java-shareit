@@ -2,7 +2,6 @@ package ru.practicum.shareit.request.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
 import lombok.NoArgsConstructor;
 import ru.practicum.shareit.user.model.User;
 
@@ -25,6 +24,7 @@ public class ItemRequest {
     @JoinColumn(name = "id_requestor", referencedColumnName = "id")
     private User requestor;
     private LocalDateTime created;
+
     public Integer getId() {
         return id;
     }
