@@ -2,6 +2,7 @@ package ru.practicum.shareit.booking;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.model.User;
@@ -12,6 +13,7 @@ import java.time.LocalDateTime;
 
 
 @Builder
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -35,52 +37,4 @@ public class Booking {
     private User booker;
     @Enumerated(EnumType.STRING)
     private Status status;
-
-    public Integer getId() {
-        return id;
-    }
-
-    public LocalDateTime getStart() {
-        return start;
-    }
-
-    public LocalDateTime getEnd() {
-        return end;
-    }
-
-    public Item getItem() {
-        return item;
-    }
-
-    public User getBooker() {
-        return booker;
-    }
-
-    public Status getStatus() {
-        return status;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public void setStart(LocalDateTime start) {
-        this.start = start;
-    }
-
-    public void setEnd(LocalDateTime end) {
-        this.end = end;
-    }
-
-    public void setItem(Item item) {
-        this.item = item;
-    }
-
-    public void setBooker(User booker) {
-        this.booker = booker;
-    }
-
-    public void setStatus(Status status) {
-        this.status = status;
-    }
 }
