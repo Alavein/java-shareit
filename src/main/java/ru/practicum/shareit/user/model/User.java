@@ -19,10 +19,8 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-
     @NotBlank(groups = {Create.class}, message = "Ошибка. Некорректное имя.")
     private String name;
-
     @NotBlank(groups = {Create.class}, message = "Ошибка. Некорректная почта.")
     @Email(groups = {Update.class, Create.class}, message = "Ошибка. Неверный формат электронной почты")
     @Column(unique = true)
