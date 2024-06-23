@@ -6,7 +6,6 @@ import lombok.NoArgsConstructor;
 import ru.practicum.shareit.user.model.User;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
 
 @Builder
@@ -18,11 +17,13 @@ public class ItemRequest {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    @NotBlank
+
     private String description;
+
     @ManyToOne
     @JoinColumn(name = "id_requestor", referencedColumnName = "id")
     private User requestor;
+
     private LocalDateTime created;
 
     public Integer getId() {

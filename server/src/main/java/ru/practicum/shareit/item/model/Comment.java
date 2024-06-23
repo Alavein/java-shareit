@@ -1,14 +1,11 @@
-package ru.practicum.shareit.item;
+package ru.practicum.shareit.item.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
-import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.model.User;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 @Builder
@@ -21,16 +18,17 @@ public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    @NotBlank
+
     private String text;
-    @NotNull
+
     @ManyToOne
     @JoinColumn(name = "id_item", referencedColumnName = "id")
     private Item item;
-    @NotNull
+
     @ManyToOne
     @JoinColumn(name = "id_author", referencedColumnName = "id")
     private User author;
+
     private LocalDateTime created;
 
     public Integer getId() {
@@ -73,3 +71,4 @@ public class Comment {
         this.created = created;
     }
 }
+

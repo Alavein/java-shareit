@@ -121,20 +121,6 @@ class UserControllerTest {
 
     @SneakyThrows
     @Test
-    void addUserNameNotValid() {
-        Integer userId = 1;
-        UserDto userDto = new UserDto(1, null, "test@yandex.ru");
-
-        mockMvc.perform(post("/users", userId)
-                        .contentType("application/json")
-                        .content(objectMapper.writeValueAsString(userDto)))
-                .andExpect(status().isBadRequest());
-
-        Mockito.verify(userService, Mockito.never()).createUser(userDto);
-    }
-
-    @SneakyThrows
-    @Test
     void updateUser() {
         Integer userId = 1;
         UserDto userDto = new UserDto(1, "test", "test2222@yandex.ru");
@@ -145,21 +131,6 @@ class UserControllerTest {
                 .andExpect(status().isOk());
 
         Mockito.verify(userService, Mockito.times(1)).updateUser(userDto, userId);
-    }
-
-
-    @SneakyThrows
-    @Test
-    void updateUserEmailNotValid() {
-        Integer userId = 1;
-        UserDto userDto = new UserDto(1, "test", "test.@yandex.ru");
-
-        mockMvc.perform(patch("/users/{userId}", userId)
-                        .contentType("application/json")
-                        .content(objectMapper.writeValueAsString(userDto)))
-                .andExpect(status().isBadRequest());
-
-        Mockito.verify(userService, Mockito.never()).updateUser(userDto, userId);
     }
 
     @SneakyThrows

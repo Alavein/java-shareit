@@ -120,22 +120,6 @@ class BookingControllerTest {
 
     @SneakyThrows
     @Test
-    void addBookingRequestStartIsNotFuture() {
-        Integer userId = 1;
-        Integer itemId = 1;
-        BookingDtoAdd bookingDtoAdd = new BookingDtoAdd(userId, start.minusDays(5), end, itemId);
-
-        mockMvc.perform(post("/bookings")
-                        .header("X-Sharer-User-Id", userId)
-                        .contentType("application/json")
-                        .content(objectMapper.writeValueAsString(bookingDtoAdd)))
-                .andExpect(status().isBadRequest());
-
-        Mockito.verify(bookingServiceImpl, Mockito.never()).createBooking(Mockito.any(), Mockito.anyInt());
-    }
-
-    @SneakyThrows
-    @Test
     void getConsentToBooking() {
         Integer bookingId = 1;
         BookingDto bookingDto = new BookingDto(1, start, end, null, null, Status.WAITING);

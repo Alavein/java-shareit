@@ -1,14 +1,9 @@
 package ru.practicum.shareit.user;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.user.dto.UserDto;
-import ru.practicum.shareit.validation.Create;
-import ru.practicum.shareit.validation.Update;
 
-import javax.validation.constraints.Positive;
-import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 
 @RestController
@@ -18,8 +13,8 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping
-    public List<UserDto> getAllUsers(@PositiveOrZero @RequestParam(defaultValue = "0") Integer from,
-                                     @Positive @RequestParam(defaultValue = "30") Integer size) {
+    public List<UserDto> getAllUsers(@RequestParam(defaultValue = "0") Integer from,
+                                     @RequestParam(defaultValue = "30") Integer size) {
         return userService.getAllUsers(from, size);
     }
 
@@ -29,12 +24,12 @@ public class UserController {
     }
 
     @PatchMapping("/{id}")
-    public UserDto updateUser(@Validated(Update.class) @RequestBody UserDto userDto, @PathVariable Integer id) {
+    public UserDto updateUser(@RequestBody UserDto userDto, @PathVariable Integer id) {
         return userService.updateUser(userDto, id);
     }
 
     @PostMapping
-    public UserDto createUser(@Validated(Create.class) @RequestBody UserDto userDto) {
+    public UserDto createUser(@RequestBody UserDto userDto) {
         return userService.createUser(userDto);
     }
 

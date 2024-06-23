@@ -4,9 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
 
-import javax.validation.Valid;
-import javax.validation.constraints.Positive;
-import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 
 @RestController
@@ -22,8 +19,8 @@ public class ItemRequestController {
     }
 
     @GetMapping("/all")
-    public List<ItemRequestDto> getAllItemRequest(@PositiveOrZero @RequestParam(defaultValue = "0") Integer from,
-                                                  @Positive @RequestParam(defaultValue = "30") Integer size,
+    public List<ItemRequestDto> getAllItemRequest(@RequestParam(defaultValue = "0") Integer from,
+                                                  @RequestParam(defaultValue = "30") Integer size,
                                                   @RequestHeader("X-Sharer-User-Id") Integer userId) {
         return itemRequestService.getAllItemRequest(from, size, userId);
     }
@@ -35,7 +32,7 @@ public class ItemRequestController {
     }
 
     @PostMapping
-    public ItemRequestDto addItemRequest(@Valid @RequestBody ItemRequestDto itemRequestDto,
+    public ItemRequestDto addItemRequest(@RequestBody ItemRequestDto itemRequestDto,
                                          @RequestHeader("X-Sharer-User-Id") Integer userId) {
         return itemRequestService.addItemRequest(itemRequestDto, userId);
     }

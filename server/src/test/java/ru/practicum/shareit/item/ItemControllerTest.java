@@ -119,20 +119,6 @@ class ItemControllerTest {
 
     @SneakyThrows
     @Test
-    void addItemIsNotValid() {
-        ItemDto itemDto = new ItemDto(1, "", "description", true,
-                1);
-
-        mockMvc.perform(post("/items")
-                        .header("X-Sharer-User-Id", 1)
-                        .contentType("application/json")
-                        .content(objectMapper.writeValueAsString(itemDto)))
-                .andExpect(status().isBadRequest());
-        Mockito.verify(itemService, Mockito.never()).addItem(Mockito.any(), Mockito.anyInt());
-    }
-
-    @SneakyThrows
-    @Test
     void update() {
         Integer itemId = 1;
 

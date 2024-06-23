@@ -5,7 +5,6 @@ import ru.practicum.shareit.booking.dto.BookingDtoAdd;
 
 import java.util.List;
 
-
 public interface BookingService {
 
     BookingDto createBooking(BookingDtoAdd bookingDto, Integer userId);
@@ -18,3 +17,4 @@ public interface BookingService {
 
     List<BookingDto> getBookingFromOwner(String state, Integer userId, Integer from, Integer size);
 }
+

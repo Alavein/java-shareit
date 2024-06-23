@@ -18,7 +18,6 @@ import java.util.stream.Collectors;
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
 
-
     @Override
     public List<UserDto> getAllUsers(Integer page, Integer size) {
         return userRepository.findAll(PageRequest.of(page, size, Sort.by(Sort.Direction.ASC, "id")))
