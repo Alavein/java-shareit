@@ -55,13 +55,13 @@ public class ItemServiceImpl implements ItemService {
 
         List<ItemDtoComments> itemsDtoComments = itemRepository.findAllByOwnerId(userId, PageRequest.of(from, page))
                 .stream()
+                .sorted(Comparator.comparing(Item::getId))
                 .map(ItemMapper::toItemDtoComments)
                 .collect(Collectors.toList());
 
         for (ItemDtoComments itemDtoComments : itemsDtoComments) {
             itemDtoComments.setComments(commentRepository.findAllByItemId(itemDtoComments.getId())
                     .stream()
-                    .sorted(Comparator.comparing(o -> o.getItem().getId()))
                     .map(CommentMapper::toCommentDto)
                     .collect(Collectors.toList()));
 
