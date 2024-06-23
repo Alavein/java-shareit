@@ -20,6 +20,7 @@ import ru.practicum.shareit.user.UserRepository;
 import ru.practicum.shareit.user.model.User;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -60,6 +61,7 @@ public class ItemServiceImpl implements ItemService {
         for (ItemDtoComments itemDtoComments : itemsDtoComments) {
             itemDtoComments.setComments(commentRepository.findAllByItemId(itemDtoComments.getId())
                     .stream()
+                    .sorted(Comparator.comparing(o -> o.getItem().getId()))
                     .map(CommentMapper::toCommentDto)
                     .collect(Collectors.toList()));
 
