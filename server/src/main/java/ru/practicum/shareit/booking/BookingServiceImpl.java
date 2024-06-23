@@ -1,6 +1,5 @@
 package ru.practicum.shareit.booking;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -21,12 +20,19 @@ import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
-@RequiredArgsConstructor
 public class BookingServiceImpl implements BookingService {
     private final BookingRepository bookingRepository;
     private final UserRepository userRepository;
     private final ItemRepository itemRepository;
     private final Sort sort = Sort.by(Sort.Direction.DESC, "start");
+
+    public BookingServiceImpl(BookingRepository bookingRepository,
+                              UserRepository userRepository,
+                              ItemRepository itemRepository) {
+        this.bookingRepository = bookingRepository;
+        this.userRepository = userRepository;
+        this.itemRepository = itemRepository;
+    }
 
     @Override
     public BookingDto getBooking(Integer bookingId, Integer userId) {

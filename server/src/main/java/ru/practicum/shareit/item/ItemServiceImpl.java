@@ -1,6 +1,5 @@
 package ru.practicum.shareit.item;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -28,7 +27,6 @@ import static java.time.LocalDateTime.now;
 
 @Service
 @Transactional(readOnly = true)
-@RequiredArgsConstructor
 public class ItemServiceImpl implements ItemService {
 
     private final ItemRepository itemRepository;
@@ -36,6 +34,18 @@ public class ItemServiceImpl implements ItemService {
     private final BookingRepository bookingRepository;
     private final CommentRepository commentRepository;
     private final ItemRequestRepository itemRequestRepository;
+
+    public ItemServiceImpl(ItemRepository itemRepository,
+                           UserRepository userRepository,
+                           BookingRepository bookingRepository,
+                           CommentRepository commentRepository,
+                           ItemRequestRepository itemRequestRepository) {
+        this.itemRepository = itemRepository;
+        this.userRepository = userRepository;
+        this.bookingRepository = bookingRepository;
+        this.commentRepository = commentRepository;
+        this.itemRequestRepository = itemRequestRepository;
+    }
 
     @Override
     public List<ItemDtoComments> getItemsOfUser(Integer userId, Integer from, Integer page) {

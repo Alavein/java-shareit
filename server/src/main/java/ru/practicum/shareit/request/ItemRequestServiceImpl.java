@@ -1,6 +1,5 @@
 package ru.practicum.shareit.request;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -21,12 +20,19 @@ import static java.time.LocalDateTime.now;
 
 @Service
 @Transactional(readOnly = true)
-@RequiredArgsConstructor
 public class ItemRequestServiceImpl implements ItemRequestService {
 
     private final ItemRequestRepository itemRequestRepository;
     private final UserRepository userRepository;
     private final ItemRepository itemRepository;
+
+    public ItemRequestServiceImpl(ItemRequestRepository itemRequestRepository,
+                                  UserRepository userRepository,
+                                  ItemRepository itemRepository) {
+        this.itemRequestRepository = itemRequestRepository;
+        this.userRepository = userRepository;
+        this.itemRepository = itemRepository;
+    }
 
 
     @Override
